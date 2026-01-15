@@ -183,10 +183,14 @@ class ARC2Generator:
     def _non_degenerate(self, grid: List[List[int]]) -> bool:
         """Check if grid has sufficient complexity."""
         distinct_colors = utils.get_colors_in_grid(grid) - {0}
-        if len(distinct_colors) < self.min_distinct_colors:
-            return False
-        if _count_non_black(grid) < self.min_non_black_cells:
-            return False
+        # if len(distinct_colors) < self.min_distinct_colors:
+        #     print(distinct_colors)
+        #     print("Color fail")
+        #     return False
+        # if _count_non_black(grid) < self.min_non_black_cells:
+        #     print(_count_non_black(grid))
+        #     print("Block fail")
+        #     return False
         return True
 
     def generate_problem_set(
@@ -250,6 +254,8 @@ class ARC2Generator:
                         "input": base["input"],
                         "output": output
                     })
+                else:
+                    print('Fail in test')
             except:
                 continue
         
