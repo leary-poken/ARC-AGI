@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import List, Dict, Any, Tuple, Optional
 import random
 
@@ -28,11 +26,10 @@ class ARC2Generator:
         self,
         max_chain_length: int = 4,
         max_grid_size: int = 30,
-        seed: Optional[int] = None,
     ):
         self.max_chain_length = max_chain_length
         self.max_grid_size = max_grid_size
-        self.rng = random.Random(seed)
+       
 
         # Quality thresholds to keep outputs meaningful
         self.min_distinct_colors = 2
@@ -195,8 +192,7 @@ class ARC2Generator:
     def generate_problem_set(
         self,
         num_train: int = 3,
-        num_test: int = 1,
-        task_id: Optional[int] = None,
+        task_id: Optional[int] = 0,
         chain_length: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
@@ -217,9 +213,13 @@ class ARC2Generator:
               }
             }
         """
+        
         task_num = task_id // self.task_range
+        seed = task_id % self.task_range
+        
         base_initial = self.generate_initial_problem(task_num)
         task_num = base_initial["task_num"]
+        self.rng = random.Random(seed)
         
         # Generate transformation chain (empty if chain_length is 0)
         if chain_length == 0:

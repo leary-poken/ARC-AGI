@@ -1,11 +1,3 @@
-"""Utility functions for ARC-AGI-2 transformations.
-
-This module provides grid transformations aligned with ARC-AGI-2 principles:
-- Transformations should be intuitive for humans
-- Complex reasoning emerges from COMBINING transformations, not individual complexity
-- Each transformation should be deterministic and predictable
-"""
-
 import random
 from typing import List, Tuple, Optional, Dict, Any
 
