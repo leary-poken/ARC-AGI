@@ -47,10 +47,14 @@ class ARC2Generator:
             Dict with "input", "output", and "task_num" keys
         """
         tmap = task_list.task_list()
+        
+        keys = list(tmap.keys())
+        
         if task_num is None:
-            task_num = self.rng.choice(list(tmap.keys()))
+            task_num = self.rng.randint(0 , len(keys) - 1)
+        
 
-        _, gen_fn, _ = tmap[task_num]
+        _, gen_fn, _ = tmap[keys[task_num]]
         pair = gen_fn()
         
         if isinstance(pair, dict):
