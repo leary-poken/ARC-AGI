@@ -42,39 +42,42 @@ class ARC2Generator:
     ) -> Dict[str, Any]:
         max_retry = 10
         while max_retry > 0:
-            """
-            Generate a base ARC-1 style problem from task_list.
-            
-            Returns:
-                Dict with "input", "output", and "task_num" keys
-            """
-            tmap = task_list.task_list()
-            
-            keys = list(tmap.keys())
-            
-            if task_num is None:
-                task_num = random.randint(0 , len(keys) - 1)
-            
+            try:
+                """
+                Generate a base ARC-1 style problem from task_list.
+                
+                Returns:
+                    Dict with "input", "output", and "task_num" keys
+                """
+                tmap = task_list.task_list()
+                
+                keys = list(tmap.keys())
+                
+                if task_num is None:
+                    task_num = random.randint(0 , len(keys) - 1)
+                
 
-            _, gen_fn, _ = tmap[keys[task_num]]
-            pair = gen_fn()
-            
-            if isinstance(pair, dict):
-                inp = pair["input"]
-                out = pair["output"]
-            else:
-                inp, out = pair
+                _, gen_fn, _ = tmap[keys[task_num]]
+                pair = gen_fn()
+                
+                if isinstance(pair, dict):
+                    inp = pair["input"]
+                    out = pair["output"]
+                else:
+                    inp, out = pair
 
-            if not utils.is_valid_grid(inp) or not utils.is_valid_grid(out):
-                max_retry -= 1
+                if not utils.is_valid_grid(inp) or not utils.is_valid_grid(out):
+                    max_retry -= 1
+                    continue
+
+                h, w = utils.get_grid_size(out)
+                if h > self.max_grid_size or w > self.max_grid_size:
+                    max_retry -= 1
+                    continue
+
+                return {"input": inp, "output": out, "task_num": task_num}
+            except Exception as e:
                 continue
-
-            h, w = utils.get_grid_size(out)
-            if h > self.max_grid_size or w > self.max_grid_size:
-                max_retry -= 1
-                continue
-
-            return {"input": inp, "output": out, "task_num": task_num}
 
         raise ValueError(f"Generation Error")
 
