@@ -40,37 +40,44 @@ class ARC2Generator:
         self,
         task_num: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """
-        Generate a base ARC-1 style problem from task_list.
-        
-        Returns:
-            Dict with "input", "output", and "task_num" keys
-        """
-        tmap = task_list.task_list()
-        
-        keys = list(tmap.keys())
-        
-        if task_num is None:
-            task_num = self.rng.randint(0 , len(keys) - 1)
-        
+        max_retry = 10
+        while max_retry > 0:
+            """
+            Generate a base ARC-1 style problem from task_list.
+            
+            Returns:
+                Dict with "input", "output", and "task_num" keys
+            """
+            tmap = task_list.task_list()
+            
+            keys = list(tmap.keys())
+            
+            if task_num is None:
+                task_num = random.randint(0 , len(keys) - 1)
+            
 
-        _, gen_fn, _ = tmap[keys[task_num]]
-        pair = gen_fn()
-        
-        if isinstance(pair, dict):
-            inp = pair["input"]
-            out = pair["output"]
-        else:
-            inp, out = pair
+            _, gen_fn, _ = tmap[keys[task_num]]
+            pair = gen_fn()
+            
+            if isinstance(pair, dict):
+                inp = pair["input"]
+                out = pair["output"]
+            else:
+                inp, out = pair
 
-        if not utils.is_valid_grid(inp) or not utils.is_valid_grid(out):
-            raise ValueError(f"Base task produced invalid grid(s) - task_num: {task_num}")
+            if not utils.is_valid_grid(inp) or not utils.is_valid_grid(out):
+                max_retry -= 1
+                continue
 
-        h, w = utils.get_grid_size(out)
-        if h > self.max_grid_size or w > self.max_grid_size:
-            raise ValueError(f"Base output too large: {h}x{w} > {self.max_grid_size} - task_num: {task_num}")
+            h, w = utils.get_grid_size(out)
+            if h > self.max_grid_size or w > self.max_grid_size:
+                max_retry -= 1
+                continue
 
-        return {"input": inp, "output": out, "task_num": task_num}
+            return {"input": inp, "output": out, "task_num": task_num}
+
+        raise ValueError(f"Generation Error")
+
 
     def _sample_params(self, name: str, grid: List[List[int]]) -> Optional[Dict[str, Any]]:
         """
@@ -82,10 +89,10 @@ class ARC2Generator:
 
         if name == "swap_colors":
             if len(colors_present) >= 2:
-                c1, c2 = self.rng.sample(colors_present, 2)
+                c1, c2 = random.sample(colors_present, 2)
             elif len(colors_present) == 1:
                 c1 = colors_present[0]
-                c2 = self.rng.choice([c for c in palette if c != c1])
+                c2 = random.choice([c for c in palette if c != c1])
             else:
                 c1, c2 = 1, 2
             return {"color1": c1, "color2": c2}
@@ -93,19 +100,19 @@ class ARC2Generator:
         if name == "remove_color":
             if len(colors_present) <= 1:
                 return None
-            return {"color": self.rng.choice(colors_present)}
+            return {"color": random.choice(colors_present)}
 
         if name == "highlight_color":
             if not colors_present:
                 return None
-            return {"color": self.rng.choice(colors_present)}
+            return {"color": random.choice(colors_present)}
 
         if name == "shift":
-            direction = self.rng.choice(["up", "down", "left", "right"])
+            direction = random.choice(["up", "down", "left", "right"])
             h, w = utils.get_grid_size(grid)
             span = h if direction in ("up", "down") else w
             max_amt = max(1, span - 1)
-            amt = self.rng.randint(1, min(3, max_amt))
+            amt = random.randint(1, min(3, max_amt))
             return {"direction": direction, "amount": amt, "wrap": False}
 
         return None
@@ -153,7 +160,7 @@ class ARC2Generator:
                 if filtered:
                     available = filtered
 
-            name = self.rng.choice(available)
+            name = random.choice(available)
             params = self._sample_params(name, cur)
             
             # Skip if params are invalid
@@ -225,9 +232,10 @@ class ARC2Generator:
         task_num = task_id // self.task_range
         seed = task_id % self.task_range
         
+        random.seed(seed)
+        
         base_initial = self.generate_initial_problem(task_num)
         task_num = base_initial["task_num"]
-        self.rng = random.Random(seed)
         
         # Generate transformation chain (empty if chain_length is 0)
         if chain_length == 0:
