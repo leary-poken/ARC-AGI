@@ -209,8 +209,8 @@ class ARC2Generator:
 
     def generate_problem_set(
         self,
+        task_num: Optional[int] = 0,
         num_train: int = 3,
-        task_id: Optional[int] = 0,
         chain_length: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
@@ -232,10 +232,7 @@ class ARC2Generator:
             }
         """
         
-        task_num = task_id // self.task_range
-        seed = task_id % self.task_range
         
-        random.seed(seed)
         
         base_initial = self.generate_initial_problem(task_num)
         task_num = base_initial["task_num"]
@@ -286,9 +283,8 @@ class ARC2Generator:
             "test_input": test_base["input"],
             "test_output": test_output,
             "metadata": {
-                "base_task": task_num,
+                "task_id": task_num,
                 "transformation_chain": chain,
                 "chain_length": len(chain),
-                "task_id" : task_id
             }
         }
