@@ -16,7 +16,7 @@
 
 import os
 
-from synthetics import common
+import common
 
 
 def generate(width=None, colors=None, thicks=None, xpose=None):

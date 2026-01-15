@@ -16,7 +16,7 @@
 
 from typing import cast
 
-from synthetics import common
+import common
 
 
 def generate(rows=None, cols=None, deltas=None, size=15, b=0, dr=(-1, 0, 1, 0),

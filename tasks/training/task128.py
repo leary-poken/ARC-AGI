@@ -14,7 +14,7 @@
 
 """Generator."""
 
-from synthetics import common
+import common
 
 
 def generate(cols=None, wides=None, talls=None, colors=None, size=15, boxes=3):
