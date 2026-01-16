@@ -259,7 +259,8 @@ class ARC2Generator:
                         "input": base["input"],
                         "output": output
                     })
-
+                else:
+                    print("Fail output: ", output) 
             except:
                 continue
         
