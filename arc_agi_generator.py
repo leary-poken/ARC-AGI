@@ -242,7 +242,7 @@ class ARC2Generator:
         # Generate training examples
         train_examples = []
         attempts = 0
-        max_attempts = num_train * 10
+        max_attempts = num_train * 100
         
         while len(train_examples) < num_train and attempts < max_attempts:
             attempts += 1
