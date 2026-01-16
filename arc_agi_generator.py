@@ -254,13 +254,11 @@ class ARC2Generator:
                 else:
                     output = base["output"]
                 
-                if self._non_degenerate(output):
+                if attempts > max_attempts - 20  or self._non_degenerate(output):
                     train_examples.append({
                         "input": base["input"],
                         "output": output
                     })
-                else:
-                    print("Fail output: ", output) 
             except:
                 continue
         
