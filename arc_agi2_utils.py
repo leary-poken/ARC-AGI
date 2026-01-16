@@ -353,7 +353,7 @@ TRANSFORMATIONS = {
     # Color - for multi-rule compositional reasoning
     'swap_colors': (swap_colors, {'type': 'color', 'preserves_size': True}),
     'remove_color': (remove_color, {'type': 'color', 'preserves_size': True}),
-    'highlight_color': (highlight_color, {'type': 'color', 'preserves_size': True}),
+    # 'highlight_color': (highlight_color, {'type': 'color', 'preserves_size': True}),
 
     # Physics - intuitive for humans, adds predictability
     'gravity_down': (gravity_down, {'type': 'physics', 'preserves_size': True}),
